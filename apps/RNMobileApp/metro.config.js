@@ -16,6 +16,7 @@ const config = {
     projectRoot,
     path.resolve(monorepoRoot, 'packages/ui'),
     path.resolve(monorepoRoot, 'packages/shared'),
+    path.resolve(monorepoRoot, 'node_modules'),
   ],
   resolver: {
     extraNodeModules: {
