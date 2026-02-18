@@ -22,9 +22,10 @@ const config = {
     extraNodeModules: {
       '@monorepo/ui': path.resolve(monorepoRoot, 'packages/ui'),
       '@monorepo/shared': path.resolve(monorepoRoot, 'packages/shared'),
+      'react': path.resolve(monorepoRoot, 'node_modules/react'),
+      'react-native': path.resolve(monorepoRoot, 'node_modules/react-native'),
     },
     nodeModulesPaths: [
-      path.resolve(projectRoot, 'node_modules'),
       path.resolve(monorepoRoot, 'node_modules'),
     ],
   },
