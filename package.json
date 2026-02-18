@@ -10,7 +10,6 @@
     ]
   },
   "scripts": {
-    "postinstall": "node scripts/postinstall.js",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf node_modules && find . -name node_modules -type d -prune -exec rm -rf {} +",
@@ -29,6 +28,7 @@
     "ajv": "^8.12.0",
     "eslint": "^8.50.0",
     "typescript": "^5.2.0"
+
   },
   "engines": {
     "node": ">= 20",
