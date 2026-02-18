@@ -1,16 +1,10 @@
-/**
- * RN Mobile App - Using Shared Packages
- * Demonstrates usage of @monorepo/ui, @monorepo/shared, and Redux
- */
-
 import React from 'react';
-import { Provider } from 'react-redux';
-import { StyleSheet } from 'react-native';
-import { store } from '@monorepo/shared';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './src/screens/HomeScreen';
-import UserDetailsScreen from './src/screens/UserDetailsScreen';
+import { Provider } from 'react-redux';
+import { store } from '@monorepo/shared';
+import HomeScreen from './screens/HomeScreen';
+import UserDetailsScreen from './screens/UserDetailsScreen';
 
 const Stack = createStackNavigator();
 
@@ -45,41 +39,4 @@ function App(): React.JSX.Element {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  container: {
-    paddingVertical: 12,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
-    textAlign: 'center',
-    marginVertical: 12,
-  },
-  subtitle: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  text: {
-    fontSize: 14,
-    lineHeight: 22,
-  },
-  codeText: {
-    fontSize: 12,
-    fontFamily: 'Menlo',
-    lineHeight: 16,
-    backgroundColor: '#F0F0F0',
-    padding: 8,
-    borderRadius: 4,
-  },
-  buttonContainer: {
-    gap: 12,
-    marginBottom: 12,
-  },
-});
-
 export default App;
-

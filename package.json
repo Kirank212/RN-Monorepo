@@ -10,26 +10,28 @@
     ]
   },
   "scripts": {
+    "postinstall": "node scripts/postinstall.js",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf node_modules && find . -name node_modules -type d -prune -exec rm -rf {} +"
+    "clean": "rm -rf node_modules && find . -name node_modules -type d -prune -exec rm -rf {} +",
+    "build:shared": "cd packages/shared && npm run build && cd ../.. ",
+    "build:ui": "cd packages/ui && npm run build && cd ../..",
+    "build:packages": "npm run build:shared && npm run build:ui",
+    "dev:mobile": "cd apps/RNMobileApp && npm start -- --reset-cache",
+    "dev:web": "cd apps/RNWebApp && npm start",
+    "build:mobile": "cd apps/RNMobileApp && npm run build",
+    "build:web": "cd apps/RNWebApp && npm run build"
   },
   "devDependencies": {
     "@react-native-community/cli": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "ajv": "^8.12.0",
     "eslint": "^8.50.0",
     "typescript": "^5.2.0"
   },
   "engines": {
     "node": ">= 20",
     "npm": ">= 7.0.0"
-  },
-  "dependencies": {
-    "react": "19.1.0",
-    "react-native": "0.81.5"
-  },
-  "overrides": {
-    "@types/react": "^19.1.0"
   }
 }

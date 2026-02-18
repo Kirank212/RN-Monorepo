@@ -13,6 +13,11 @@
   "dependencies": {
     "@monorepo/ui": "*",
     "@monorepo/shared": "*",
+    "@reduxjs/toolkit": "^2.0.1",
+    "react-redux": "^8.1.1",
+    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/stack": "^6.3.20",
+    "react-native-gesture-handler": "^2.14.0",
     "react": "19.1.0",
     "react-native": "0.81.5",
     "@react-native/new-app-screen": "0.81.5",

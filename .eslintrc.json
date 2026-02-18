@@ -1,7 +1,6 @@
 {
   "root": true,
   "extends": [
-    "@react-native-community",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended"
   ],
@@ -16,11 +15,24 @@
   "env": {
     "node": true,
     "es2020": true,
-    "react-native/react-native": true
+    "browser": true
   },
   "plugins": [
-    "@typescript-eslint",
-    "react-native"
+    "@typescript-eslint"
+  ],
+  "overrides": [
+    {
+      "files": ["apps/RNMobileApp/**/*"],
+      "env": {
+        "react-native/react-native": true
+      },
+      "plugins": ["react-native"],
+      "extends": ["plugin:react-native/all"]
+    },
+    {
+      "files": ["apps/RNWebApp/**/*"],
+      "extends": ["react-app"]
+    }
   ],
   "rules": {
     "@typescript-eslint/no-unused-vars": [
