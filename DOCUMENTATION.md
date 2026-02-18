@@ -1,238 +1,174 @@
-# React Native Monorepo - Documentation
 
-A production-ready React Native monorepo with shared UI components, utilities, and hooks.
+# Project Architecture
 
----
+## Overview
 
-## 🏗️ Project Architecture
+This monorepo hosts a React Native mobile app and a React Native Web app that share state, API services, and UI components. The repo is organized with NPM workspaces to centralize dependency management while keeping app-specific runtime requirements isolated.
+
+## Goals
+
+- Share business logic and UI components across mobile and web.
+- Keep React versions app-specific to avoid runtime conflicts.
+- Maintain a scalable structure for adding more apps or packages.
+- Enforce consistent TypeScript and linting standards across the workspace.
+
+## High-Level Structure
+
+- apps/
+	- RNMobileApp: Native iOS/Android app
+	- RNWebApp: Web app (React Native Web + React DOM)
+- packages/
+	- shared: Redux store, API clients, hooks, types, utilities
+	- ui: Cross-platform UI components
+- scripts/
+	- postinstall: Workspace setup utilities
+
+## Folder Structure
 
 ```
 RN-Monorepo/
 ├── apps/
-│   └── RNMobileApp/                 # Main React Native App
+│   ├── RNMobileApp/
+│   │   ├── App.tsx
+│   │   ├── app.json
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── src/
+│   │       ├── navigation/
+│   │       └── screens/
+│   └── RNWebApp/
+│       ├── public/
 │       ├── src/
-│       │   ├── App.tsx             # Main component
-│       │   └── index.ts            # Entry point
-│       ├── ios/                    # iOS native code
-│       ├── android/                # Android native code
-│       ├── metro.config.js         # Metro bundler (monorepo configured)
-│       ├── babel.config.js         # Babel config
-│       ├── tsconfig.json           # TypeScript config
-│       └── package.json            # App dependencies
-│
+│       │   ├── App.tsx
+│       │   ├── index.tsx
+│       │   └── screens/
+│       ├── package.json
+│       └── tsconfig.json
 ├── packages/
-│   ├── ui/                         # UI Components Library (@monorepo/ui)
+│   ├── shared/
 │   │   ├── src/
-│   │   │   ├── components/
-│   │   │   │   ├── Button.tsx     # Customizable button
-│   │   │   │   └── Card.tsx       # Container component
-│   │   │   └── index.ts           # Exports
+│   │   │   ├── api/
+│   │   │   ├── hooks/
+│   │   │   ├── store/
+│   │   │   ├── types/
+│   │   │   └── utils/
 │   │   └── package.json
-│   │
-│   └── shared/                     # Shared Utils & Types (@monorepo/shared)
+│   └── ui/
 │       ├── src/
-│       │   ├── utils/
-│       │   │   └── common.ts      # formatDate, capitalize, debounce, throttle
-│       │   ├── hooks/
-│       │   │   └── useFetch.ts    # Data fetching hook
-│       │   ├── types/
-│       │   │   └── common.ts      # TypeScript interfaces
-│       │   └── index.ts           # Exports
+│       │   └── components/
 │       └── package.json
-│
-├── package.json                   # Root workspace config
-├── tsconfig.json                  # TypeScript configuration
-└── DOCUMENTATION.md               # This file
+├── scripts/
+│   └── postinstall.js
+├── package.json
+└── tsconfig.json
 ```
 
-### Tech Stack
-- **React**: 19.1.0
-- **React Native**: 0.81.5
-- **TypeScript**: 5.8.3
-- **Node.js**: >= 20
-- **Package Manager**: npm workspaces
+## Dependency Strategy
 
----
+### App-Specific React Versions
 
-## 🚀 How to Run the Project
+- Mobile app uses React 19.x to align with the React Native runtime.
+- Web app uses React 18.x for compatibility with React DOM and React Native Web.
 
-### Step 1: Install Dependencies
+This keeps each runtime stable and avoids React internals mismatches across platforms.
 
-```bash
-cd /Users/kirankumarbollem/RN-Monorepo
-npm install
-```
+### Shared Packages
 
-### Step 2: Setup iOS (macOS only)
+- Shared packages declare `react` and `react-native` as peer dependencies.
+- Apps provide the actual React runtime versions.
+- Shared packages avoid bundling their own React copies.
 
-```bash
-cd apps/RNMobileApp/ios
-pod install --repo-update
-cd ../../..
-```
+## Module Boundaries
 
-### Step 3: Start Metro Bundler
+### apps/RNMobileApp
 
-```bash
-cd apps/RNMobileApp
-npm start
-```
+- Entry point: app bootstrap and navigation setup.
+- Uses the shared Redux store and hooks from packages/shared.
+- Uses UI primitives from packages/ui.
+- Platform-native dependencies remain here (e.g., React Native config).
 
-### Step 4: Run on Device/Simulator
+### apps/RNWebApp
 
-Open another terminal and run:
+- Web entry point that wires React DOM and React Native Web.
+- Reuses the same screens and store as the mobile app.
+- Has web-specific tooling and bundler configuration.
 
-```bash
-cd apps/RNMobileApp
+### packages/shared
 
-# iOS simulator (macOS)
-npm run ios
+- Redux store, slices, and async thunks.
+- API service layer for remote data access.
+- Types and utility helpers shared across apps.
 
-# Android device/emulator
-npm run android
-```
+### packages/ui
 
-### Metro Dev Commands
-- Press `r` to reload app
-- Press `d` to open dev menu
-- Press `j` to open debugger
-- Press `Ctrl+C` to exit
+- Cross-platform UI components.
+- Styling and theming hooks (if present) are centralized here.
 
----
+## Usage of Shared Packages
 
-## 📦 Shared Packages
+### Shared Store (packages/shared)
 
-### 1. @monorepo/ui - UI Components
+- Exposes a Redux store and typed hooks.
+- Apps import the store and wrap their root with `Provider`.
+- Async thunks and API services live here to ensure consistency.
 
-#### Button Component
+### Shared UI (packages/ui)
 
-```typescript
-import { Button } from '@monorepo/ui';
+- Provides reusable components that work on web and mobile.
+- Apps import components directly from `@monorepo/ui`.
+- Styling is kept compatible with React Native and React Native Web.
 
-<Button
-  title="Click Me"
-  onPress={() => console.log('Pressed')}
-  variant="primary"      // 'primary' | 'secondary'
-  disabled={false}
-/>
-```
+### Typical Import Patterns
 
-#### Card Component
+- Store and hooks from shared:
+	- `@monorepo/shared`
+- UI components from ui:
+	- `@monorepo/ui`
 
-```typescript
-import { Card } from '@monorepo/ui';
+## State Management
 
-<Card title="Card Title">
-  <Text>Card content goes here</Text>
-</Card>
-```
+- Redux Toolkit is used for state and async flows.
+- Store is created in packages/shared and imported by both apps.
+- Typed hooks are exposed from shared for consistent usage.
 
----
+## Navigation
 
-### 2. @monorepo/shared - Utilities & Hooks
+- React Navigation is used for both mobile and web.
+- The navigation config is shared where possible.
+- Platform-specific navigation wrappers live in each app when necessary.
 
-#### Utility Functions
+## Build and Tooling
 
-```typescript
-import { 
-  formatDate, 
-  capitalize, 
-  debounce, 
-  throttle 
-} from '@monorepo/shared';
+- TypeScript is used across apps and packages.
+- ESLint is configured at the root and used by all workspaces.
+- Each app has its own build/start scripts tailored to its runtime.
 
-formatDate(new Date());           // "Feb 17, 2026"
-capitalize('hello');              // "Hello"
+## Runtime Composition
 
-const debouncedSearch = debounce((query) => {
-  console.log('Search:', query);
-}, 300);
+### Mobile
 
-const throttledScroll = throttle(() => {
-  console.log('Scrolling');
-}, 100);
-```
+1. Mobile app starts the React Native runtime.
+2. Shared store and UI components are imported from packages.
+3. Screens render with shared logic and platform-native UI.
 
-#### useFetch Hook
+### Web
 
-```typescript
-import { useFetch } from '@monorepo/shared';
+1. Web app starts React DOM and React Native Web.
+2. Shared store and UI components are imported from packages.
+3. Screens render identically with web-specific bootstrapping.
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
+## Extension Points
 
-export function UserList() {
-  const { data, loading, error } = useFetch<User[]>(
-    'https://api.example.com/users'
-  );
+- Add new shared packages under packages/ (e.g., analytics, auth).
+- Add new apps under apps/ (e.g., admin web, tablet app).
+- Extend shared store slices for new features.
+- Add new UI components in packages/ui and consume across apps.
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+## Non-Goals
 
-  return (
-    <ScrollView>
-      {data?.map(user => (
-        <Card key={user.id} title={user.name}>
-          <Text>{user.email}</Text>
-        </Card>
-      ))}
-    </ScrollView>
-  );
-}
-```
+- A single React version across all apps is not required.
+- Sharing platform-native code that is not portable.
 
-#### Type Definitions
+## Summary
 
-```typescript
-import { User, ApiResponse, AppError } from '@monorepo/shared';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
-interface ApiResponse<T> {
-  data: T;
-  status: number;
-  timestamp: Date;
-}
-
-interface AppError {
-  message: string;
-  code: string;
-  statusCode: number;
-}
-```
-
----
-
-## 💡 Complete Example
-
-```typescript
-import { View, ScrollView, Text } from 'react-native';
-import { Button, Card } from '@monorepo/ui';
-import { capitalize, formatDate, useFetch } from '@monorepo/shared';
-
-export function Dashboard() {
-  const { data, loading, error } = useFetch('https://api.example.com/data');
-
-  return (
-    <ScrollView style={{ flex: 1, padding: 16 }}>
-      <Card title={capitalize('dashboard')}>
-        <Button
-          title="Get Started"
-          onPress={() => console.log('Started')}
-          variant="primary"
-        />
-        {loading && <Text>Loading...</Text>}
-        {error && <Text>Error: {error.message}</Text>}
-        {data && <Text>Last updated: {formatDate(new Date())}</Text>}
-      </Card>
-    </ScrollView>
-  );
-}
-```
+This architecture maximizes code reuse while preserving platform independence. Shared packages provide a clean boundary for business logic and UI primitives, while each app maintains the runtime configuration required by its platform.

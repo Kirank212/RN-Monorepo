@@ -89,12 +89,6 @@ import { store, fetchUsers, fetchUserDetails, RootState } from '@monorepo/shared
 | Type errors | Run `npm run type-check` to debug |
 | App crashes | Check logs in Xcode console or Android Studio |
 
-## 🎨 Interview Notes
-
-- Demonstrates **reusability**: screens use shared Redux store
-- **Error handling**: API failures show error messages
-- **Type-safe**: Full TypeScript coverage
-- **Architecture**: Clear separation of concerns
 
 ---
 

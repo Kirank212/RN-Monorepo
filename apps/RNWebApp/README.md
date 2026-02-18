@@ -93,12 +93,6 @@ npm test
 | Type errors | Run `npm run type-check` to debug |
 | Styles not loading | Check `src/index.css` is imported in `index.tsx` |
 
-## 🎨 Interview Notes
-
-- **Reusability**: Mobile and web share Redux, types, and API calls
-- **Navigation**: React Navigation works on web too
-- **Type-safe**: Full TypeScript coverage
-- **No Code Duplication**: Screens written once, work everywhere
 
 ---
 
