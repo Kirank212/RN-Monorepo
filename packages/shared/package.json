@@ -18,14 +18,14 @@
     "react-redux": "^8.1.1"
   },
   "devDependencies": {
-    "@types/react": "^19.1.0",
-    "@types/react-native": "^0.73.0",
+    "@types/react": "18.2.50",
+    "@types/react-native": "0.73.0",
     "typescript": "^5.2.0",
-    "react": "19.1.0",
+    "react": "18.2.0",
     "react-native": "0.81.5"
   },
   "peerDependencies": {
-    "react": ">=19.0.0",
+    "react": "18.x || 19.x",
     "react-native": ">=0.81.0"
   }
 }
